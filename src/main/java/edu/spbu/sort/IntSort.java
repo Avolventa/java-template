@@ -12,7 +12,7 @@ public class IntSort {
     int len = array.length;
     int n = 1; // кратность сравнений (сравнивать по 1-му елем., 2-м ...)
     int shift; // сдвиг в перебираемом массиве
-    int two_size; // количество елементов для 2-го массива
+    int two_size; // количество элементов для 2-го массива
     int[] arr2;
     while (n < len) {
       shift = 0;
