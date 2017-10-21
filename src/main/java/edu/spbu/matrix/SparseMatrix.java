@@ -5,6 +5,8 @@ package edu.spbu.matrix;
  */
 public class SparseMatrix implements Matrix
 {
+  public int sparseSize;
+  public double sparseMatrix[][];
   /**
    * загружает матрицу из файла
    * @param fileName
@@ -13,7 +15,7 @@ public class SparseMatrix implements Matrix
 
   }
   /**
-   * однопоточное умнджение матриц
+   * однопоточное умножение матриц
    * должно поддерживаться для всех 4-х вариантов
    *
    * @param o
@@ -36,7 +38,7 @@ public class SparseMatrix implements Matrix
   }
 
   /**
-   * спавнивает с обоими вариантами
+   * сравнивает с обоими вариантами
    * @param o
    * @return
    */
