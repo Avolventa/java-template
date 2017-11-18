@@ -1,27 +1,31 @@
 package edu.spbu.matrix;
 
 import java.util.Scanner;
-import java.io.File;
+import java.io.*;
 
 /**
  * Плотная матрица
  */
 public class DenseMatrix implements Matrix
 {
-  public int denseSize;
-  public double denseMatrix[][];
+  public int size;
+  public double matrix[][];
   /**
    * загружает матрицу из файла
    * @param fileName
    */
   public DenseMatrix(String fileName) {
     //открыть файл
-    Scanner sc = new Scanner(new File(fileName));
-    denseSize = (Scanner.nextLine()).split(" ").length;
-    while () {
-
+    File in;
+    try {
+      in = new File(fileName);
+    } catch(FileNotFoundException e) {
+      System.out.println("Файл не найден");
+      return;
     }
-
+    Scanner sc = new Scanner(in);
+    size = (sc.nextLine()).split(" ").length;
+    //in.close();
     //закрыть файл
   }
   /**
