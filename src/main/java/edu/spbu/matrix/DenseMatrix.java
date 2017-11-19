@@ -87,22 +87,24 @@ public class DenseMatrix implements Matrix
    * @return
    */
   @Override public Matrix mul(Matrix o) {
-    /*if (o instanceof DenseMatrix) {
-      DenseMatrix other = new DenseMatrix(((DenseMatrix) o).denseSize));
-    }*/
-    DenseMatrix result = new DenseMatrix(denseSize);
-    if (denseSize == ((DenseMatrix) o).denseSize) {
-      for (int i = 0; i < denseSize; i++) {
-        for (int j = 0; j < denseSize; j++) {
-          for (int k = 0; k < denseSize; k++) {
-            result.denseMatrix[i][j] += denseMatrix[i][k] * ((DenseMatrix) o).denseMatrix[k][j];
+    if (o instanceof DenseMatrix) {
+      DenseMatrix other = (DenseMatrix) o;
+      DenseMatrix result = new DenseMatrix(denseSize);
+      if (denseSize == other.denseSize) {
+        for (int i = 0; i < denseSize; i++) {
+          for (int j = 0; j < denseSize; j++) {
+            for (int k = 0; k < denseSize; k++) {
+              result.denseMatrix[i][j] += denseMatrix[i][k] * other.denseMatrix[k][j];
+            }
           }
         }
+      } else {
+        System.out.println("Error dimension");
       }
+      return result;
     } else {
-      System.out.println("Error dimension");
+      return o;
     }
-    return result;
   }
 
   /**
