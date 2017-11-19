@@ -1,6 +1,6 @@
 package edu.spbu.matrix;
 
-import java.util.Scanner;
+import java.util.*;
 import java.io.*;
 
 /**
@@ -17,16 +17,18 @@ public class DenseMatrix implements Matrix
   public DenseMatrix(String fileName) {
     try {
       //open "in" file
-      FileInputStream in;
+      FileInputStream fin;
       try {
-        in = new FileInputStream(fileName);
+        fin = new FileInputStream(fileName);
       } catch (FileNotFoundException e) {
         System.out.println("In file not found");
         return;
       }
       //getting size from the first row
       String[] firstRow;
-      Scanner scan = new Scanner(in);
+      Scanner scan = new Scanner(fin);
+      //use local for point double
+      scan.useLocale(Locale.US);
       firstRow = (scan.nextLine()).split(" ");
       denseSize = (firstRow).length;
       denseMatrix = new double[denseSize][denseSize];
@@ -45,11 +47,16 @@ public class DenseMatrix implements Matrix
         }
       }
       //close file
-      in.close();
+      fin.close();
     } catch (Exception e) {
       System.out.println("Something is wrong");
       return;
     }
+  }
+
+  public DenseMatrix(int size) {
+    denseSize = size;
+    denseMatrix = new double[size][size];
   }
 
   public void printMatrix(String fileName) {
@@ -64,6 +71,7 @@ public class DenseMatrix implements Matrix
           }
           fout.write(("\r\n").getBytes());
         }
+        fout.close();
       } catch (FileNotFoundException e) {
         System.out.println("Out file was not found");
       }
@@ -72,15 +80,29 @@ public class DenseMatrix implements Matrix
     }
   }
   /**
-   * однопоточное умнджение матриц
+   * однопоточное умножение матриц
    * должно поддерживаться для всех 4-х вариантов
    *
    * @param o
    * @return
    */
-  @Override public Matrix mul(Matrix o)
-  {
-    return null;
+  @Override public Matrix mul(Matrix o) {
+    /*if (o instanceof DenseMatrix) {
+      DenseMatrix other = new DenseMatrix(((DenseMatrix) o).denseSize));
+    }*/
+    DenseMatrix result = new DenseMatrix(denseSize);
+    if (denseSize == ((DenseMatrix) o).denseSize) {
+      for (int i = 0; i < denseSize; i++) {
+        for (int j = 0; j < denseSize; j++) {
+          for (int k = 0; k < denseSize; k++) {
+            result.denseMatrix[i][j] += denseMatrix[i][k] * ((DenseMatrix) o).denseMatrix[k][j];
+          }
+        }
+      }
+    } else {
+      System.out.println("Error dimension");
+    }
+    return result;
   }
 
   /**
