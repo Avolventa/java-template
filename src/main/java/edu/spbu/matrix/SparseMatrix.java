@@ -15,7 +15,6 @@ public class SparseMatrix implements Matrix
   public int sparseSize;
   //<Key,<innerKey,Element>> = <Row, <Column, value>>
   public HashMap<Integer, Row> sparseMatrix;
-  public HashMap<Integer, Row> sparseTranspose;
   /**
    * загружает матрицу из файла
    * @param fileName
@@ -39,16 +38,12 @@ public class SparseMatrix implements Matrix
       sparseSize = (firstRow).length;
       sparseMatrix = new HashMap<Integer, Row>();
       Row row = new Row();
-      sparseTranspose = new HashMap<Integer, Row>();
-      Row rowT = new Row();
       Double tmp;
       //recording the first row
       for (int i = 0; i < sparseSize; i++) {
         tmp = Double.parseDouble(firstRow[i]);
         if (tmp != 0.0) {
           row.put(i, tmp);
-          rowT.put(0, tmp);
-          sparseTranspose.put(i, rowT);
         }
       }
       if (row != null) {
@@ -57,14 +52,11 @@ public class SparseMatrix implements Matrix
       //recording the other rows
       for (int i = 1; i < sparseSize; i++) {
         row = new Row();
-        rowT = new Row();
         for (int j = 0; j < sparseSize; j++) {
           if(scan.hasNextDouble()) {
-            tmp = Double.parseDouble(firstRow[i]);
+            tmp = scan.nextDouble();
             if (tmp != 0.0) {
               row.put(j, tmp);
-              rowT.put(i, tmp);
-              sparseTranspose.put(j, rowT);
             }
           } else {
             System.out.println("The wrong format of number");
@@ -85,22 +77,23 @@ public class SparseMatrix implements Matrix
   public SparseMatrix(int size) {
     sparseSize = size;
     sparseMatrix = new HashMap<>();
-    sparseTranspose = new HashMap<>();
   }
 
-  public void printMatrix(String fileName, HashMap<Integer, Row> Matr) {
+  public void printMatrix(String fileName) {
     try {
       //open "out" file
       try {
         FileOutputStream fout = new FileOutputStream(fileName);
         //Recording in file
-        Row row;
+         Row row;
         for (int i = 0; i < sparseSize; i++) {
-          row = Matr.get(i);
+          row = sparseMatrix.get(i);
           if (row != null) {
             for (int j = 0; j < sparseSize; j++) {
               if (row.get(j) != null) {
                 fout.write((String.valueOf(row.get(j)) + " ").getBytes());
+              } else {
+                fout.write(("0.0 ").getBytes());
               }
             }
             fout.write(("\r\n").getBytes());
@@ -114,6 +107,22 @@ public class SparseMatrix implements Matrix
       System.out.println("Error in method printMatrix");
     }
   }
+
+  public SparseMatrix transSparse() {
+    SparseMatrix transpose = new SparseMatrix(sparseSize);
+    for (int i = 0; i < sparseSize; i++) {
+      Row row = new Row();
+      for (int j = 0; j <sparseSize; j++) {
+        if (sparseMatrix.get(j).get(i) != null) {
+          row.put(j, (sparseMatrix.get(j)).get(i));
+        }
+      }
+      if (row != null) {
+        transpose.sparseMatrix.put(i, row);
+      }
+    }
+    return transpose;
+  }
   /**
    * однопоточное умножение матриц
    * должно поддерживаться для всех 4-х вариантов
@@ -121,9 +130,50 @@ public class SparseMatrix implements Matrix
    * @param o
    * @return
    */
-  @Override public Matrix mul(Matrix o)
-  {
-    return null;
+  @Override public Matrix mul(Matrix o) {
+    if (o instanceof DenseMatrix) {
+      DenseMatrix other = (DenseMatrix) o;
+      SparseMatrix result = new SparseMatrix(sparseSize);
+      if (sparseSize == other.denseSize) {
+        for (int i = 0; i < sparseSize; i++) {
+          Row row = new Row();
+          for (int j = 0; j < sparseSize; j++) {
+            double sum = 0.0;
+            for (int k = 0; k < sparseSize; k++) {
+              if (sparseMatrix.get(i).get(k) != null) {
+                sum += sparseMatrix.get(i).get(k) * other.denseMatrix[k][j];
+              }
+            }
+            row.put(j, sum);
+          }
+          result.sparseMatrix.put(i, row);
+        }
+      } else {
+        System.out.println("Error dimension");
+      }
+      return result;
+    } else {
+      SparseMatrix other = ((SparseMatrix) o).transSparse();
+      SparseMatrix result = new SparseMatrix(sparseSize);
+      if (sparseSize == other.sparseSize) {
+        for (int i = 0; i < sparseSize; i++) {
+          Row row = new Row();
+          for (int j = 0; j < sparseSize; j++) {
+            double sum = 0.0;
+            for (int k = 0; k < sparseSize; k++) {
+              if (sparseMatrix.get(i).get(k) != null && other.sparseMatrix.get(j).get(k) != null) {
+                sum += sparseMatrix.get(i).get(k) * other.sparseMatrix.get(j).get(k);
+              }
+            }
+            row.put(j, sum);
+          }
+          result.sparseMatrix.put(i, row);
+        }
+      } else {
+        System.out.println("Error dimension");
+      }
+      return result;
+    }
   }
 
   /**

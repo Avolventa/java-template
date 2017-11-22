@@ -79,6 +79,17 @@ public class DenseMatrix implements Matrix
       System.out.println("Error in method printMatrix");
     }
   }
+
+  public DenseMatrix denseSparse() {
+    DenseMatrix transpose = new DenseMatrix(denseSize);
+    for (int i = 0; i < denseSize; i++) {
+      for (int j = 0; j < denseSize; j++) {
+        transpose.denseMatrix[j][i] = denseMatrix[i][j];
+      }
+    }
+    return transpose;
+  }
+
   /**
    * однопоточное умножение матриц
    * должно поддерживаться для всех 4-х вариантов
@@ -103,7 +114,12 @@ public class DenseMatrix implements Matrix
       }
       return result;
     } else {
-      return o;
+      SparseMatrix other = (SparseMatrix) o;
+      SparseMatrix result = new SparseMatrix(other.sparseSize);
+      if (denseSize == other.sparseSize) {
+        result = (SparseMatrix) other.transSparse().mul(this.denseSparse());
+      }
+      return result.transSparse();
     }
   }
 
