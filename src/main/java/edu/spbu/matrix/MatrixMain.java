@@ -28,7 +28,7 @@ public class MatrixMain {
             ResSS.printMatrix("src/main/DenseSparseRes.txt");
 
             ResSS = (SparseMatrix) SMatrix.mul(SMatrix);
-            ResSS.printMatrix("src/main/SparseRes.txt");
+            ResSS.printMatrix("src/main/SSRes.txt");
 
         } catch (Exception e) {
             System.out.println("Error in main");
