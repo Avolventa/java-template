@@ -9,14 +9,14 @@ import java.io.*;
 public class SparseMatrix implements Matrix
 {
   private class Row extends HashMap<Integer, Double> {
-    public boolean equals(Row row) {
+    public boolean rEquals(Row row) {
       for (int i = 0; i < sparseSize; i++) {
         Double a = this.get(i);
         Double b = row.get(i);
-        if (a == null ^ b != null){
+        if ((a == null) && (b != null)||(a != null) && (b == null)){
           return false;
         }
-        if (a != b) {
+        if (a != b && !a.equals(b)) {
           return false;
         }
       }
@@ -54,7 +54,7 @@ public class SparseMatrix implements Matrix
       //recording the first row
       for (int i = 0; i < sparseSize; i++) {
         tmp = Double.parseDouble(firstRow[i]);
-        if (tmp != 0.0) {
+        if (!tmp.equals(0.0)) {
           row.put(i, tmp);
         }
       }
@@ -156,7 +156,9 @@ public class SparseMatrix implements Matrix
                 sum += sparseMatrix.get(i).get(k) * other.denseMatrix[k][j];
               }
             }
-            row.put(j, sum);
+            if (!(sum == 0.0)) {
+              row.put(j, sum);
+            }
           }
           result.sparseMatrix.put(i, row);
         }
@@ -177,7 +179,9 @@ public class SparseMatrix implements Matrix
                 sum += sparseMatrix.get(i).get(k) * other.sparseMatrix.get(j).get(k);
               }
             }
-            row.put(j, sum);
+            if (!(sum == 0.0)) {
+              row.put(j, sum);
+            }
           }
           result.sparseMatrix.put(i, row);
         }
@@ -212,10 +216,10 @@ public class SparseMatrix implements Matrix
     for (int i = 0; i < sparseSize; i++) {
       Row a = sparseMatrix.get(i);
       Row b = other.sparseMatrix.get(i);
-      if (a == null ^ b != null){
+      if ((a == null) && (b != null)||(a != null) && (b == null)){
         return false;
       }
-      if (!a.equals(b)) {
+      if (a != b && !a.rEquals(b)) {
         return false;
       }
     }

@@ -35,15 +35,15 @@ public class MatrixTest
   @Test
   public void mulSS() {
     Matrix s1 = new SparseMatrix("s1.txt");
-    Matrix s2 = new SparseMatrix("s2.txt");
+    Matrix s2 = new SparseMatrix("s1.txt");
     Matrix expected = new SparseMatrix("resultSS.txt");
-    Assert.assertTrue(expected.equals(s1.mul(s2)));
+    Assert.assertTrue(expected.equals(s1.mul(s1)));
   }
 
   @Test
   public void catchEquals() {
     Matrix s1 = new SparseMatrix("s1.txt");
-    Matrix expected = new SparseMatrix("s2.txt");
+    Matrix expected = new SparseMatrix("s1.txt");
     Assert.assertTrue(expected.equals(s1));
   }
 }
