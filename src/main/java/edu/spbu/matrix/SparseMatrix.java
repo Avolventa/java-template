@@ -193,6 +193,18 @@ public class SparseMatrix implements Matrix
    * @return
    */
   @Override public boolean equals(Object o) {
-    return false;
+    boolean t = true;
+    if(!(o instanceof SparseMatrix)){
+      return false;
+    }
+    SparseMatrix other = (SparseMatrix) o;
+    for (int i = 0; i < sparseSize; i++) {
+      Row a = sparseMatrix.get(i);
+      Row b = sparseMatrix.get(i);
+      if (a.equals(b) == false) {
+        t = false;
+      }
+    }
+  return t;
   }
 }

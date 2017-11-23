@@ -140,7 +140,18 @@ public class DenseMatrix implements Matrix
    * @return
    */
   @Override public boolean equals(Object o) {
-    return false;
+    boolean t = true;
+    if (!(o instanceof DenseMatrix)) {
+      return false;
+    }
+    DenseMatrix other = (DenseMatrix) o;
+    for (int i = 0; i < denseSize; i++) {
+      for (int j = 0; j < denseSize; j++) {
+        if (denseMatrix[i][j] != other.denseMatrix[i][j]) {
+          t = false;
+        }
+      }
+    }
+    return t;
   }
-
 }
