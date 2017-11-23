@@ -9,7 +9,19 @@ import java.io.*;
 public class SparseMatrix implements Matrix
 {
   private class Row extends HashMap<Integer, Double> {
-
+    public boolean equals(Row row) {
+      for (int i = 0; i < sparseSize; i++) {
+        Double a = this.get(i);
+        Double b = row.get(i);
+        if (a == null ^ b != null){
+          return false;
+        }
+        if (a != b) {
+          return false;
+        }
+      }
+      return true;
+    }
   }
 
   public int sparseSize;
@@ -209,4 +221,5 @@ public class SparseMatrix implements Matrix
     }
   return true;
   }
+
 }
