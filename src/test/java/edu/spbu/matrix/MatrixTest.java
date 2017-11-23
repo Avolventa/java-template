@@ -39,4 +39,11 @@ public class MatrixTest
     Matrix expected = new SparseMatrix("resultSS.txt");
     Assert.assertTrue(expected.equals(s1.mul(s2)));
   }
+
+  @Test
+  public void catchEquals() {
+    Matrix s1 = new SparseMatrix("s1.txt");
+    Matrix expected = new SparseMatrix("s2.txt");
+    Assert.assertTrue(expected.equals(s1));
+  }
 }
