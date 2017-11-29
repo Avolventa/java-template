@@ -129,9 +129,72 @@ public class DenseMatrix implements Matrix
    * @param o
    * @return
    */
+
+  class NewThread implements Runnable {
+    Thread t;
+    int startRow;
+    int endRow;
+    DenseMatrix other;
+    DenseMatrix result;
+
+    NewThread (DenseMatrix o, DenseMatrix res, int start, int end) {
+      other = o;
+      result = res;
+      startRow = start;
+      endRow = end;
+      t = new Thread(this);
+      System.out.println("Thread for " + start + " row has been running");
+      t.start();
+    }
+
+    @Override public void run() {
+      for (int i = startRow; i < endRow; i++) {
+        for (int j = 0; j < denseSize; j++) {
+          for (int k = 0; k < denseSize; k++) {
+            result.denseMatrix[i][j] += denseMatrix[i][k] * other.denseMatrix[k][j];
+          }
+        }
+      }
+    }
+  }
+
   @Override public Matrix dmul(Matrix o)
   {
-    return null;
+    if (o instanceof DenseMatrix) {
+      DenseMatrix other = (DenseMatrix) o;
+      DenseMatrix result = new DenseMatrix(denseSize);
+
+      int countThreads = Runtime.getRuntime().availableProcessors();
+      if (countThreads > denseSize) {
+        countThreads = denseSize;
+      }
+      NewThread[] thread = new NewThread[countThreads];
+
+      int countRows = denseSize / countThreads;
+      int add = denseSize % countThreads;
+
+      int start = 0;
+      thread[0] = new NewThread(other, result, start, start + countRows + add);
+      for (int i = 1; i < countThreads; i++) {
+        start += countRows;
+        thread[i] = new NewThread(other, result, start, start + countRows);
+      }
+      try {
+        for (int i = 0; i < countThreads; i++) {
+          thread[i].t.join();
+        }
+        } catch (InterruptedException e) {
+          System.out.println("Interrupted exception");
+        }
+      return result;
+    } else {
+      SparseMatrix other = (SparseMatrix) o;
+      SparseMatrix result = new SparseMatrix(other.sparseSize);
+      if (denseSize == other.sparseSize) {
+        result = (SparseMatrix) other.transSparse().dmul(this.denseSparse());
+      }
+      return result.transSparse();
+    }
   }
 
   /**

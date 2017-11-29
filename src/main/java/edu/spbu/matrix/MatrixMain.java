@@ -14,6 +14,9 @@ public class MatrixMain {
             ResDD = (DenseMatrix) DMatrix.mul(DMatrix);
             ResDD.printMatrix("src/main/DenseRes.txt");
 
+            ResDD = (DenseMatrix) DMatrix.dmul(DMatrix);
+            ResDD.printMatrix("src/main/DenseResDMul.txt");
+
             SparseMatrix SMatrix = new SparseMatrix("src/main/SparseFirst.txt");
             System.out.println(SMatrix.sparseSize);
 
@@ -29,6 +32,17 @@ public class MatrixMain {
 
             ResSS = (SparseMatrix) SMatrix.mul(SMatrix);
             ResSS.printMatrix("src/main/SSRes.txt");
+
+            ResSS = (SparseMatrix) SMatrix.dmul(SMatrix);
+            ResSS.printMatrix("src/main/SSResDMul.txt");
+
+            ResSS = (SparseMatrix) SMatrix.dmul(DMatrix);
+            ResSS.printMatrix("src/main/SparseDenseResDMul.txt");
+
+            ResSS = (SparseMatrix) DMatrix.dmul(SMatrix);
+            ResSS.printMatrix("src/main/DenseSparseResDMul.txt");
+
+            System.out.println("Processors: " + Runtime.getRuntime().availableProcessors());
 
         } catch (Exception e) {
             System.out.println("Error in main");

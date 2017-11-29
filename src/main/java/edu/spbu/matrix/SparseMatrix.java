@@ -160,7 +160,9 @@ public class SparseMatrix implements Matrix
               row.put(j, sum);
             }
           }
-          result.sparseMatrix.put(i, row);
+          if (row != null) {
+            result.sparseMatrix.put(i, row);
+          }
         }
       } else {
         System.out.println("Error dimension");
@@ -183,7 +185,9 @@ public class SparseMatrix implements Matrix
               row.put(j, sum);
             }
           }
-          result.sparseMatrix.put(i, row);
+          if (row != null) {
+            result.sparseMatrix.put(i, row);
+          }
         }
       } else {
         System.out.println("Error dimension");
@@ -198,9 +202,96 @@ public class SparseMatrix implements Matrix
    * @param o
    * @return
    */
+
+  class NewThread implements Runnable {
+    Thread t;
+    int startRow;
+    int endRow;
+    Matrix other;
+    SparseMatrix result;
+
+    NewThread (Matrix o, SparseMatrix res, int start, int end) {
+      other = o;
+      result = res;
+      startRow = start;
+      endRow = end;
+      t = new Thread(this);
+      System.out.println("Thread for " + start + " row has been running");
+      t.start();
+    }
+
+    @Override public void run() {
+      if (other instanceof DenseMatrix) {
+        DenseMatrix otherDense = (DenseMatrix) other;
+        for (int i = startRow; i < endRow; i++) {
+          Row row = new Row();
+          for (int j = 0; j < sparseSize; j++) {
+            double sum = 0.0;
+            for (int k = 0; k < sparseSize; k++) {
+              if (sparseMatrix.get(i).get(k) != null) {
+                sum += sparseMatrix.get(i).get(k) * otherDense.denseMatrix[k][j];
+              }
+            }
+            if (!(sum == 0.0)) {
+              row.put(j, sum);
+            }
+          }
+          if (row != null) {
+            result.sparseMatrix.put(i, row);
+          }
+        }
+
+      } else {
+        SparseMatrix otherSparse = ((SparseMatrix) other).transSparse();
+        for (int i = startRow; i < endRow; i++) {
+          Row row = new Row();
+          for (int j = 0; j < sparseSize; j++) {
+            double sum = 0.0;
+            for (int k = 0; k < sparseSize; k++) {
+              if (sparseMatrix.get(i).get(k) != null && otherSparse.sparseMatrix.get(j).get(k) != null) {
+                sum += sparseMatrix.get(i).get(k) * otherSparse.sparseMatrix.get(j).get(k);
+              }
+            }
+            if (!(sum == 0.0)) {
+              row.put(j, sum);
+            }
+          }
+          if (row != null) {
+            result.sparseMatrix.put(i, row);
+          }
+        }
+      }
+    }
+  }
+
   @Override public Matrix dmul(Matrix o)
   {
-    return null;
+    Matrix other = o;
+    SparseMatrix result = new SparseMatrix(sparseSize);
+
+    int countThreads = Runtime.getRuntime().availableProcessors();
+    if (countThreads > sparseSize) {
+      countThreads = sparseSize;
+    }
+    NewThread[] thread = new NewThread[countThreads];
+
+    int countRows = sparseSize / countThreads;
+    int add = sparseSize % countThreads;
+
+    int start = 0;
+    thread[0] = new NewThread(other, result, start, start + countRows + add);
+    for (int i = 1; i < countThreads; i++) {
+      start += countRows;
+      thread[i] = new NewThread(other, result, start, start + countRows);
+    }
+    try {
+      for (int i = 0; i < countThreads; i++) {
+        thread[i].t.join();
+      }
+    } catch (InterruptedException e) {
+      System.out.println("Interrupted exception");
+    }
+    return result;
   }
 
   /**

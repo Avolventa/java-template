@@ -41,6 +41,38 @@ public class MatrixTest
   }
 
   @Test
+  public void dmulDD() {
+    Matrix d1 = new DenseMatrix("d1.txt");
+    Matrix d2 = new DenseMatrix("d2.txt");
+    Matrix expected = new DenseMatrix("resultDD.txt");
+    Assert.assertTrue(expected.equals(d1.dmul(d2)));
+  }
+
+  @Test
+  public void dmulSD() {
+    Matrix s1 = new SparseMatrix("s1.txt");
+    Matrix d2 = new DenseMatrix("d2.txt");
+    Matrix expected = new SparseMatrix("resultSD.txt");
+    Assert.assertTrue(expected.equals(s1.dmul(d2)));
+  }
+
+  @Test
+  public void dmulDS() {
+    Matrix d1 = new DenseMatrix("d1.txt");
+    Matrix s2 = new SparseMatrix("s2.txt");
+    Matrix expected = new SparseMatrix("resultDS.txt");
+    Assert.assertTrue(expected.equals(d1.dmul(s2)));
+  }
+
+  @Test
+  public void dmulSS() {
+    Matrix s1 = new SparseMatrix("s1.txt");
+    Matrix s2 = new SparseMatrix("s1.txt");
+    Matrix expected = new SparseMatrix("resultSS.txt");
+    Assert.assertTrue(expected.equals(s1.dmul(s1)));
+  }
+
+  @Test
   public void catchEquals() {
     Matrix s1 = new SparseMatrix("s1.txt");
     Matrix expected = new SparseMatrix("s1.txt");
