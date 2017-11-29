@@ -126,7 +126,6 @@ public class DenseMatrix implements Matrix
   /**
    * многопоточное умножение матриц
    *
-   * @param o
    * @return
    */
 

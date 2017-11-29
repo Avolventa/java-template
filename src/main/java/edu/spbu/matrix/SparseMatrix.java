@@ -199,7 +199,6 @@ public class SparseMatrix implements Matrix
   /**
    * многопоточное умножение матриц
    *
-   * @param o
    * @return
    */
 
