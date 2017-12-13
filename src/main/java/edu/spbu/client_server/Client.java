@@ -17,8 +17,10 @@ public class Client {
     }
 
     public void writeOutputStream() throws IOException {
-        String str = "GET /MyFile.html HTTP/1.1\r\n\r\n";
+        //String str = "GET /MyFile.html HTTP/1.1\r\n\r\n";
+        String str = "GET / HTTP/1.1\r\n\r\n";
         outputStream.write(str.getBytes());
+        outputStream.write("".getBytes());
         outputStream.flush();
 
         /*System.out.println("Enter your text: ");
