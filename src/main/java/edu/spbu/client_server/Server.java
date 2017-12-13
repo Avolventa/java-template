@@ -6,28 +6,30 @@ import java.nio.file.*;
 import java.net.Socket;
 
 public class Server {
-    public Socket s;
-    private InputStream is;
-    private OutputStream os;
+    public Socket clientSocket;
+    private InputStream inputStream;
+    private OutputStream outputStream;
     private String fileName;
 
-    public Server(Socket s) throws IOException {
-        this.s = s;
-        this.is = s.getInputStream();
-        this.os = s.getOutputStream();
+    public Server(Socket clientSocket) throws IOException {
+        this.clientSocket = clientSocket;
+        this.inputStream = clientSocket.getInputStream();
+        this.outputStream = clientSocket.getOutputStream();
         this.fileName = "";
     }
 
     public void readInputStream() throws IOException {
-        Scanner scan = new Scanner(is);
+        Scanner scan = new Scanner(inputStream);
         String str = scan.next();
         if (str.equals("GET")) {
             str = scan.next();
-            fileName = str.substring(1, str.length() - 1);
+            fileName = str.substring(1, str.length());
+            System.out.println(fileName);
         } else {
             System.out.println("Strange string input");
         }
 
+        //System.out.println("Client has sent: " + str);
     }
 
     public void writeOutputStream() throws IOException {
@@ -35,10 +37,10 @@ public class Server {
         if (file.exists()) {
             String s = new String(Files.readAllBytes(Paths.get(fileName)));
             String response = "HTTP/1.1 200 OK\r\n" + "Content-Type:text/html\r\n\r\n" + s;
-            os.write(response.getBytes());
+            outputStream.write(response.getBytes());
         } else {
-            os.write("<html><h2>404</h2></html>".getBytes());
-            os.flush();
+            outputStream.write("<html><h2>404</h2></html>".getBytes());
+            outputStream.flush();
         }
     }
 }

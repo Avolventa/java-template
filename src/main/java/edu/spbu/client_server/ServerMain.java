@@ -6,13 +6,15 @@ import java.net.Socket;
 
 public class ServerMain {
     public static void main(String[] args) throws IOException {
-        ServerSocket ss = new ServerSocket(8080);
+        ServerSocket serverSocket = new ServerSocket(8889);
         while (true) {
-            Socket s = ss.accept();
-            Server server = new Server(s);
+            System.out.println("Waiting for client connection...");
+            Socket clientSocket = serverSocket.accept();
+            Server server = new Server(clientSocket);
+            System.out.println("Client connected!");
             server.readInputStream();
             server.writeOutputStream();
-            server.s.close();
+            server.clientSocket.close();
         }
     }
 }

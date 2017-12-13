@@ -6,8 +6,8 @@ import java.net.Socket;
 
 public class ClientMain {
     public static void main(String[] args) throws IOException {
-        Socket s = new Socket(InetAddress.getByName("127.0.0.1"), 8080);
-        Client client = new Client(s);
+        Socket clientSocket = new Socket(InetAddress.getByName("127.0.0.1"), 8889);
+        Client client = new Client(clientSocket);
         client.writeOutputStream();
         client.readInputStream();
     }
