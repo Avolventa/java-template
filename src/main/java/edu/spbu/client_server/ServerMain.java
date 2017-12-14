@@ -6,7 +6,7 @@ import java.net.Socket;
 
 public class ServerMain {
     public static void main(String[] args) throws IOException {
-        ServerSocket serverSocket = new ServerSocket(8889);
+        ServerSocket serverSocket = new ServerSocket(1122);
         while (true) {
             System.out.println("Waiting for client connection...");
             Socket clientSocket = serverSocket.accept();

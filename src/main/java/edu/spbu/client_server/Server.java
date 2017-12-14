@@ -42,5 +42,16 @@ public class Server {
             outputStream.write("<html><h2>404</h2></html>".getBytes());
             outputStream.flush();
         }
+        /*String response = "HTTP/1.1 200 OK\r\n" +
+                "Content-Type:text/html\r\n\r\n" +
+                "<!DOCTYPE html>\n" +
+                "<html>\n" +
+                "<body>\n" +
+                "<p>Hi</p> <p style=\"color:red;\">Hello</p>\n" +
+                "<p style=\"color:blue;\">World</p>\n" +
+                "<p style=\"font-size:36px;\">Byby</p>\n" +
+                "</body>\n" +
+                "</html>\n\n";
+        outputStream.write(response.getBytes());*/
     }
 }
